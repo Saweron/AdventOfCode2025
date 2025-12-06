@@ -53,7 +53,6 @@ public static void ParseInstruction(string Instruction, State state) {
 
 	int moveByAmount = int.Parse(Instruction[1..]) * (identifier == RIGHT_IDENTIFIER ? 1 : -1);
 	state.MoveBy(moveByAmount);
-	// Console.WriteLine(state.GetPosition());
 }
 
 State MyState = new();
