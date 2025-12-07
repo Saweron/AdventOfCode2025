@@ -21,7 +21,6 @@ public static long LargestNumber(string cells, int joiningAmount = 12) {
 			}
 
 			if (item == 9) {
-				// lastIndex += 1;
 				break;
 			}
 		}
@@ -39,6 +38,4 @@ public static long SumLines(string[] lines) {
 	return sum;
 }
 
-// Console.WriteLine(LargestNumber("811111111111119"));
-// Console.WriteLine(LargestNumber("234234234234278"));
 Console.WriteLine(SumLines(File.ReadAllLines(USING_PATH)));
