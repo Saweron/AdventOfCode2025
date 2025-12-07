@@ -16,10 +16,6 @@ public struct ExpirationRange {
 		this.Obliterated = obliterated;
 	}
 
-	public readonly bool InRange(long comparing) {
-		return comparing >= this.Lowest && comparing <= this.Highest;
-	}
-
 	public readonly long ItemsInRange() {
 		return this.Obliterated ? 0 : Highest - Lowest + 1;
 	}
@@ -64,21 +60,6 @@ public class Parsed {
 		this.Ranges = addedRanges.ToArray<ExpirationRange>();
 		this.Items = addedItems.ToArray<long>();
 	}
-}
-
-public static bool IsItemExpired(long itemId, ExpirationRange[] ranges) {
-	foreach (ExpirationRange checkingRange in ranges) {
-		if (checkingRange.InRange(itemId)) {return true;}
-	}
-	return false;
-}
-
-public static int CountFresh(long[] items, ExpirationRange[] ranges) {
-	int count = 0;
-	foreach (long item in items) {
-		count += IsItemExpired(item, ranges) ? 1 : 0;
-	}
-	return count;
 }
 
 public static long CountTotalPotential(ExpirationRange[] ranges) {
