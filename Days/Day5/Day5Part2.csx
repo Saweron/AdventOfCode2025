@@ -87,7 +87,6 @@ public static long CountTotalPotential(ExpirationRange[] ranges) {
 
 	for (int myRangeIndex = 0; myRangeIndex < trimmedRanges.Length; myRangeIndex++) {
 		ExpirationRange trimmedRange = trimmedRanges[myRangeIndex];
-		// Console.WriteLine($"MY RANGE: {myRangeIndex}");
 		for (int otherRangeIndex = 0; otherRangeIndex < trimmedRanges.Length; otherRangeIndex ++) {
 			if (trimmedRange.Obliterated) {break;} // my range was obliterated last step
 
@@ -101,14 +100,9 @@ public static long CountTotalPotential(ExpirationRange[] ranges) {
 		trimmedRanges[myRangeIndex] = trimmedRange;
 		if (trimmedRange.Obliterated) {continue;}
 		count += trimmedRange.ItemsInRange();
-		// Console.WriteLine($"TOTAL COUNT: {count} INCREMENTING BY: {trimmedRange.ItemsInRange()}");
-		// Console.WriteLine("LOWEST HIGHEST:");
-		// Console.WriteLine(trimmedRange.Lowest);
-		// Console.WriteLine(trimmedRange.Highest);
 	}
 	return count;
 }
 
 Parsed myParsed = new(File.ReadAllLines(USING_PATH));
 Console.WriteLine($"TOTAL POTENTIAL: {CountTotalPotential(myParsed.Ranges)}");
-// Console.WriteLine($"TOTAL FRESH: {CountFresh(myParsed.Items, myParsed.Ranges)}")
