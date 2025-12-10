@@ -32,22 +32,6 @@ public class InstructionSet {
 	}
 }
 
-public static string[,] LinesToGrid(string[] lines) {
-	const char ENTRY_SEPARATOR = SYMBOL_BLANK;
-
-	// create grid array of values from raw text input
-	int maxSizeX = lines[0].Split(ENTRY_SEPARATOR, StringSplitOptions.RemoveEmptyEntries).Length;
-	int maxSizeY = lines.Length;
-	string[,] parsedGrid = new string[maxSizeX, maxSizeY];
-	for (int y = 0; y < maxSizeY; y++) {
-		string[] splitLine = lines[y].Split(ENTRY_SEPARATOR, StringSplitOptions.RemoveEmptyEntries);
-		for (int x = 0; x < maxSizeX; x++) {
-			parsedGrid[x, y] = splitLine[x];
-		}
-	}
-	return parsedGrid;
-}
-
 public static char SafeStringRead(string input, int index) {
 	if (index > input.Length - 1) {return SYMBOL_BLANK;}
 	return input[index];
@@ -55,56 +39,37 @@ public static char SafeStringRead(string input, int index) {
 
 public static string[,] LinesToGridAligned(string[] lines) {
 	int maxCharsX = 0;
-	foreach (string line in lines) {
-		if (line.Length > maxCharsX) {maxCharsX = line.Length;}
-	}
-	// Console.WriteLine($"MAX LENGTH X: {maxCharsX}");
-	// int maxCharsX = lines[0].Length;
+	foreach (string line in lines) {if (line.Length > maxCharsX) {maxCharsX = line.Length;}}
+
 	int maxSizeX = lines[0].Split(SYMBOL_BLANK, StringSplitOptions.RemoveEmptyEntries).Length;
 	int maxSizeY = lines.Length;
 	string[,] parsedGrid = new string[maxSizeX, maxSizeY];
 
 	string[] columnBuffer = new string[maxSizeY];
 	int columnIndex = 0;
+
 	for (int i = 0; i < maxCharsX; i++) {
 		bool allBlanks = true;
 		for (int line = 0; line < maxSizeY; line++) {
-			// Console.WriteLine($"{line} {i}");
-			// char reading = lines[line][i];
 			char reading = SafeStringRead(lines[line], i);
-			// Console.WriteLine(reading);
 			if (reading != SYMBOL_BLANK) {allBlanks = false;}
-			// columnBuffer[line] += reading;
 
 			// final (operation) line doesn't need whitespace alignment padding
 			if (line != maxSizeY) {columnBuffer[line] = columnBuffer[line] + reading;}
 		}
-		// Console.WriteLine(allBlanks);
 
 		if (allBlanks) {
-			// Console.WriteLine("ALL BLANKS");
-			for (int line = 0; line < maxSizeY; line++) {
-				parsedGrid[columnIndex, line] = columnBuffer[line][..^1]; //remove the final blank appended on
-				// Console.WriteLine(columnBuffer[line][..^1]);
-			}
+			// remove the final blank appended on
+			for (int line = 0; line < maxSizeY; line++) {parsedGrid[columnIndex, line] = columnBuffer[line][..^1];}
 			columnBuffer = new string[maxSizeY];
 			columnIndex += 1;
 		}
 	}
 
-	for (int line = 0; line < maxSizeY; line++) {
-		parsedGrid[columnIndex, line] = columnBuffer[line]; //remove the final blank appended on
-		// Console.WriteLine("FINAL");
-		// Console.WriteLine(columnBuffer[line]);
-	}
+	for (int line = 0; line < maxSizeY; line++) {parsedGrid[columnIndex, line] = columnBuffer[line];}
 
 	return parsedGrid;
 }
-
-// public static char? GetCharPadded(string input, int index, int longest) {
-// 	Debug.Assert(input.Length < longest, "Input cannot be longer than longest parameter");
-// 	return input[index];
-// }
 
 public static string[] TransposeEntries(string[] before) {
 	int longestLength = 0;
@@ -120,7 +85,6 @@ public static string[] TransposeEntries(string[] before) {
 			if (characterIndex > line.Length - 1) {continue;} // out of bounds
 			combinedWord += line[characterIndex];
 		}
-		// Console.WriteLine($"TRANSPOSED {combinedWord}");
 		after[characterIndex] = combinedWord;
 	}
 
@@ -157,7 +121,6 @@ public class Parsed {
 		List<InstructionSet> makingSetsList = [];
 
 		for (int x = 0; x < maxSizeX; x++) {
-			// Console.WriteLine($"LINE: {parsedGrid[x, maxSizeY - 1]}");
 			char instruction = parsedGrid[x, maxSizeY - 1][0];
 			Debug.Assert(instruction == SYMBOL_MULTIPLY || instruction == SYMBOL_ADD, "Last entry must be a math symbol");
 			long[] values = ToNumbers(TransposeEntries(GetColumn(parsedGrid, x)));
@@ -178,6 +141,4 @@ public static long SumAllInstructions(InstructionSet[] sets) {
 }
 
 Parsed myParsed = new(File.ReadAllLines(USING_PATH));
-// string[,] myGrid = LinesToGridAligned(File.ReadAllLines(PATH_TO_EXAMPLE));
-
 Console.WriteLine($"SUM: {SumAllInstructions(myParsed.InstructionSets)}");
